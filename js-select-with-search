@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<style type="text/css">
+		:root{
+			--body: #f3f5f7;
+			--background: #ffffff;
+			--text: #32214f;
+			--color: 162, 122, 231;
+		}
+		body{
+			margin: 0;
+			height: 100vh;
+			background: var(--body);
+			padding: 0;
+		}
+		body, input, ::placeholder{
+			font-family: sans-serif;
+			font-weight: 300;
+		}
+		/*::-webkit-scrollbar{
+			width: 10px;
+		}
+		::-webkit-scrollbar-track{
+			background: var(--body);
+			margin: 5px 0;
+		}
+		::-webkit-scrollbar-thumb{
+			border-radius: 10px;
+			background: rgba(var(--color), 1);
+		}
+		::-webkit-scrollbar-thumb:hover{
+			background: rgba(var(--color), .75);
+		}*/
+		.selectionOfZuca{
+			position: absolute;
+			top: 1rem;
+		}
+		.selectionOfZuca ul{
+			padding: 0;
+			margin: 0;
+			max-height: 0;
+			overflow: hidden auto;
+			list-style-type: none;
+			transition: 0.25s easy-in-out;
+		}
+		.selectionOfZuca:focus-within ul,
+		.selectionOfZuca ul:hover{
+			max-height: 300px;
+		}
+		.selectionOfZuca ul li{
+			background: var(--background);
+			color: rgb(var(--color));
+			font-weight: 500;
+			font-size: 18px;
+			border-bottom: 1px solid rgba(var(--color), .25)
+			transition: background .25s easy-in-out; 
+						opacity .25s easy-in-out; 
+						transform .25s easy-in-out;
+		}
+		.selectionOfZuca ul li span{
+			display: block;
+			padding: 25px;
+		}
+		.selectionOfZuca ul li:hover{
+			cursor: pointer;
+			background: rgba(var(--color), .1);
+		}
+		.selectionOfZuca ul li:last-child{
+			border-bottom: none;
+		}
+		.selectionOfZuca ul li.out{
+			animation: out .25s easy-in-out;
+			transform: translateX(100%);
+			opacity: 0;
+		}
+		@keyframes out{
+			from{
+				opacity: 0;
+				transform: translateX(0);
+			}
+			to{
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+		#inputMain{
+		    border: none;
+		    background-color: transparent;
+		    color: white;
+		    font-size: 1.5rem;
+		    z-index: 2;
+		    width: 100%;
+		}
+		#inputMain:focus {
+			-webkit-box-shadow: none;
+			box-shadow: none;
+		    outline-offset: 0px;
+		    outline: -webkit-focus-ring-color auto 0px;
+		}
+		.selectionOfZuca .input-container{
+			background-color: #2980b9;
+		    padding: .55rem;
+		    cursor: pointer;
+		    display: flex;
+		    align-items: center;
+		}
+		.fa.fa-chevron-down{
+		    color: white;
+   			z-index: 1;
+		}
+		::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+		  color: white;
+		  opacity: 1; /* Firefox */
+		}
+		:-ms-input-placeholder { /* Internet Explorer 10-11 */
+		  color: white;
+		}
+		::-ms-input-placeholder { /* Microsoft Edge */
+		  color: white;
+		}
+		#oElement{
+			display: flex;
+		    justify-content: center;
+		    height: 100vh;
+		    align-items: center;
+		}
+	</style>
+</head>
+<body>
+	<div id="oElement">
+		<div class="selectionOfZuca" onclick="selectedFruitNew()">
+		
+			<div class="input-container">
+
+					<input id="inputMain" type="text" placeholder="Which food are you looking for?" name="" value="" spellcheck="false" >
+
+					<i class="fa fa-chevron-down" aria-hidden="true"></i>
+
+			</div>
+			<ul>
+				<li id="f1" ><span>Limão</span></li>
+				<li id="f2" ><span>Uva</span></li>
+				<li id="f3" ><span>Melão</span></li>
+				<li id="f4" ><span>Pera</span></li>
+				<li id="f5" ><span>Maça</span></li>
+				<li id="f6" ><span>Laranja</span></li>
+			</ul>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function inputFocus(e, ul, defaultValue){/*list of elements*/
+			/*console.log('inputFocus');
+			console.log(e);
+			console.log(ul);
+			console.log(defaultValue);*/
+
+			ul.style.pointerEvents = 'auto';
+
+			if(e.target.value.trim() === defaultValue)
+				e.target.value = '';
+		}
+
+		function inputFocusOut(e, ul, defaultValue){/*list of elements*/
+			/*console.log('inputFocusOut');
+			console.log(e);
+			console.log(ul);
+			console.log(defaultValue);*/
+
+			setTimeout(() => {
+				if(e.target.value.trim().length <= 0)
+					e.target.value = defaultValue;
+			}, 100);
+
+			setTimeout(() => {
+				[...ul.children].forEach(item => {
+					item.classList.remove('in');
+					item.classList.remove('out');
+					item.style.display = 'block';
+				});
+			}, 275);
+		}
+
+		function inputSearch({target: {value}}, ul){
+			const items = [...ul.children];
+
+			items.find(item => {
+				if(item.textContent.trim().toUpperCase().startsWith(value.trim().toUpperCase())){
+					if(item.classList.contains('out')){
+						item.style.display = 'block';
+						item.classList.remove('out');
+						item.classList.add('in');
+					}
+				}else{
+					item.classList.remove('in');
+					item.classList.add('out');
+					setTimeout(() => item.style.display = 'none', 275);
+				}
+			})
+		}
+
+		
+		function liClick({target}, ul, input, listener){/*Click on element of list*/
+			/*console.log('liClick');
+			console.log(target);
+			console.log(ul);
+			console.log(input);
+			console.log(listener);*/
+
+			const textContent = target.textContent.trim();
+
+			input.value = textContent;
+			ul.style.pointerEvents = "none";
+
+			listener(textContent);
+		}
+
+
+		function init(listener){
+			document.querySelectorAll('.selectionOfZuca').forEach(container =>{
+				console.log(container);
+				const input 		= container.children[0].children[0];
+				console.log(input);
+				const defaultValue  = input.value;
+				console.log(defaultValue);
+
+				const ul = container.children[1];
+
+				[...ul.children].forEach(li =>
+					li.addEventListener('click', (e) => liClick(e, ul, input, listener))
+				);
+
+				input.addEventListener('focus', 	(e) => inputFocus(e, ul, defaultValue));
+				input.addEventListener('focusout', 	(e) => inputFocusOut(e, ul, defaultValue));
+				input.addEventListener('input', 	(e) => inputSearch(e, ul));
+			})
+		}
+
+		init((value) => {
+			console.log(value);
+		});
+
+
+
+
+		function selectedFruitNew(){
+			let selectedFruit = document.querySelector('.selectionOfZuca').children[0].children[0].value;
+					
+			let fruitList = document.querySelector('.selectionOfZuca').children[1].children;
+			console.log(fruitList);
+
+			for(let i=0; i<fruitList.length; i++){
+			    console.log(fruitList[i].id);
+			    console.log(fruitList[i].textContent);
+			    let fruit = fruitList[i].textContent;
+			 
+			   if(fruit == selectedFruit){
+			        console.log('selectedFruit----'+selectedFruit);
+			    }
+			}	
+		}
+
+	</script>
+</body>
+</html>
